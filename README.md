@@ -1,42 +1,39 @@
 # TodoAPI 📝
 
-A simple RESTful API for managing a to-do list, built with Django and Django REST Framework.
+Welcome! This is a simple to-do list API built with Django. It's a great project for learning the basics of creating a REST API.
 
 ## ✨ Core Features
 
-*   **CRUD Operations:** Full support for Creating, Reading, Updating, and Deleting to-do items.
-
-*   **Browsable API:** User-friendly interface provided by Django REST Framework for easy interaction and testing in the browser.
+*   **User Accounts:** Create user accounts and log in.
+*   **Task Management:** Create, Read, Update, and Delete your own tasks
+*   **API Documentation:** An interactive Swagger UI to easily explore and test the API.
 
 ## 🛠️ Technologies Used
 
 *   **Backend**: [Python](https://www.python.org/), [Django](https://www.djangoproject.com/)
 *   **API Framework**: [Django REST Framework](https://www.django-rest-framework.org/)
-*   **Authentication**: [Djoser](https://djoser.readthedocs.io/en/latest/) & [Simple JWT](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/) for token-based authentication.
-*   **API Schema**: [drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/) for generating OpenAPI 3 schemas.
-*   **Database**: [SQLite](https://www.sqlite.org/index.html) (default, easily configurable)
+*   **Authentication**: [Djoser](https://djoser.readthedocs.io/en/latest/) 
+*   **API Schema**: [drf-yasg](https://drf-yasg.readthedocs.io/en/latest/) (for generating a Swagger/OpenAPI schema.)
+*   **Database**: [SQLite](https://www.sqlite.org/index.html)
 
 ## 🚀 Getting Started
-
-> **Security Note**
-> This project is configured to load some credentials (like `SECRET_KEY`) from environment variables.
 
 Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Prerequisites
 
 *   Python 3.8+
-*   pip (Python package installer)
 
 ### Installation
 
 1.  **Clone the repository:**
     ```sh
-    git clone https://github.com/your-username/TodoAPI.git
+    git clone https://github.com/Tornam/TodoAPI.git
     cd TodoAPI
     ```
 
 2.  **Create and activate a virtual environment:**
+    A virtual environment keeps your project's dependencies separate from other projects.
     *   On Windows:
         ```sh
         python -m venv venv
@@ -44,7 +41,7 @@ Follow these instructions to get a copy of the project up and running on your lo
         ```
     *   On macOS/Linux:
         ```sh
-        python3 -m venv venv
+        python -m venv venv
         source venv/bin/activate
         ```
 
@@ -55,21 +52,18 @@ Follow these instructions to get a copy of the project up and running on your lo
 
 4.  **Set up environment variables:**
 
-    Create a `.env` file in the project root directory (same folder as `manage.py`). Then, generate a new secret key and add it to the file.
-
-    You can generate a key using Django's built-in management command:
-    ```sh
-    python manage.py shell -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+    Create a file named `.env` in the project root directory (the same folder as `manage.py`). Your `.env` file should look like this:
     ```
-
-    Your `.env` file should look like this:
-    ```
-    SECRET_KEY='your-newly-generated-secret-key'
+    SECRET_KEY='your-super-secret-key-goes-here'
     DEBUG=True
+
+    # You can generate the `SECRET_KEY` by running:
+    # python manage.py shell -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
     ```
 
 5.  **Apply database migrations:**
     ```sh
+    python manage.py makemigrations
     python manage.py migrate
     ```
 
@@ -78,49 +72,55 @@ Follow these instructions to get a copy of the project up and running on your lo
     python manage.py runserver
     ```
 
-The API will be available at `http://127.0.0.1:8000/`.
+The API will now be running at `http://127.0.0.1:8000/`.
 
-## 📖 API Endpoints
+## 📖 Using the API
 
-Here are the available endpoints. The base URL is `/api/`.
+*   **Swagger UI:** `http://127.0.0.1:8000/docs/swagger/`
+*   **Redoc:** `http://127.0.0.1:8000/docs/redoc/`
 
-### Todos (`/tasks/`)
-
-*   **`GET /api/tasks/`**
-    *   **Description:** Retrieve a list of all to-do items.
-    *   **Success Response (200 OK):**
-        ```json
-        [
-            {
-                "id": 1,
-                "title": "Learn Django",
-                "description": "Read the official Django documentation.",
-                "completed": false
-            },
-            {
-                "id": 2,
-                "title": "Build an API",
-                "description": "Create a simple Todo API.",
-                "completed": true
-            }
-        ]
-        ```
-
-*   **`POST /api/tasks/`**
-    *   **Description:** Create a new to-do item.
+### 1. Create a User
+Go to the Swagger UI:
+*   **`POST /auth/users/`**: Create a new user.
     *   **Request Body:**
         ```json
         {
-            "title": "Write a README",
-            "description": "Document the API endpoints."
+          "username": "testuser",
+          "password": "strong-password"
         }
         ```
-    *   **Success Response (201 Created):** The newly created to-do item object.
 
-### Single Todo (`api/tasks/<id>/`)
+### 2. Get an Authentication Token
+To access protected endpoints (like your tasks), you need to log in to get a token.
+*   **`POST /auth/token/login/`**: Log in and receive an auth token.
+    *   **Request Body:**
+        ```json
+        {
+          "username": "testuser",
+          "password": "strong-password"
+        }
+        ```
+    *   **Success Response:** You'll get a response with your token, like `{"auth_token": "your-token-string"}`.
 
-*   **`GET /api/tasks/<id>/`**: Retrieve a single to-do item by its ID.
-*   **`PUT /api/tasks/<id>/`**: Update a to-do item. Requires all fields.
-*   **`PATCH /api/tasks/<id>/`**: Partially update a to-do item. Only include the fields you want to change.
-*   **`DELETE /api/tasks/<id>/`**: Delete a to-do item.
+### 3. Make Authenticated Requests
+To use your token, click the "Authorize" button at the top of the Swagger page. In the popup, type `Token` followed by a space and your token string.
 
+Example: `Token your-token-string`
+
+Now you can access the task endpoints!
+
+### Task Endpoints
+
+*   **`GET /api/tasks/`**: Get a list of *your* to-do items.
+*   **`POST /api/tasks/`**: Create a new to-do item for yourself.
+    *   **Request Body:**
+        ```json
+        {
+            "title": "My first task",
+            "description": "Learn how to use the API."
+        }
+        ```
+*   **`GET /api/tasks/{id}/`**: Get a single one of your tasks.
+*   **`PUT /api/tasks/{id}/`**: Update one of your tasks.
+*   **`PATCH /api/tasks/{id}/`**: Partially update one of your tasks.
+*   **`DELETE /api/tasks/{id}/`**: Delete one of your tasks.
