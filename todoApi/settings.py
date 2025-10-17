@@ -11,6 +11,12 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+
+from dotenv import load_dotenv
+
+# Load the .env file
+load_dotenv()
 
 import pymysql
 pymysql.install_as_MySQLdb()
@@ -92,11 +98,11 @@ DATABASES = {
     # MySQL
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'db_name',
-        'USER': 'db_username',
-        'PASSWORD': 'db_password',
-        'HOST': 'localhost',
-        'PORT': '3306',      
+        'NAME': os.environ.get("DB_NAME"),
+        'USER': os.environ.get("DB_USER"),
+        'PASSWORD': os.environ.get("DB_PASSWORD"),
+        'HOST': os.environ.get("DB_HOST"),
+        'PORT': os.environ.get("DB_PORT"),      
     }
 }
 
