@@ -9,3 +9,4 @@ jsonschema-specifications==2025.9.1
 PyMySQL==1.1.1
 tzdata==2025.2
 whitenoise==6.11.0
+python-dotenv
