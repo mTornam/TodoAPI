@@ -63,6 +63,11 @@ Follow these instructions to get a copy of the project up and running on your lo
     python manage.py migrate
     ```
 
+6.  **Collect static files:**
+    ```sh
+    python manage.py collectstatic
+    ```
+
 6.  **Run the development server:**
     ```sh
     python manage.py runserver
